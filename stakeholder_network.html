@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "lightblue", "font": {"color": "black"}, "id": "M_B", "label": "M_B", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Mark Jan Terwindt", "label": "Mark Jan Terwindt", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Peter van Bodegom", "label": "Peter van Bodegom", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Gijs Dierks", "label": "Gijs Dierks", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marieke de Wal", "label": "Marieke de Wal", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "PJ Beers", "label": "PJ Beers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bianca Langhout-van den Bulk", "label": "Bianca Langhout-van den Bulk", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Stefan de Jong", "label": "Stefan de Jong", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Tatiana Abi Aad", "label": "Tatiana Abi Aad", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Tung Tung Chan", "label": "Tung Tung Chan", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Wiesje Korf", "label": "Wiesje Korf", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Margo Strijbosch", "label": "Margo Strijbosch", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Emile St\u00f6ver", "label": "Emile St\u00f6ver", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Matthijs Jasperse", "label": "Matthijs Jasperse", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ronald Grootscholten", "label": "Ronald Grootscholten", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Maarten Prins", "label": "Maarten Prins", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Debby van Egmond", "label": "Debby van Egmond", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "GerhardaTamminga", "label": "GerhardaTamminga", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jochem Timmers", "label": "Jochem Timmers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Peter Verheij", "label": "Peter Verheij", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Wolf Mooij", "label": "Wolf Mooij", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Koos Biesmeijer", "label": "Koos Biesmeijer", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "William Voorberg", "label": "William Voorberg", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Detmer Koekoek", "label": "Detmer Koekoek", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bert Mens", "label": "Bert Mens", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Donald Broekhuizen", "label": "Donald Broekhuizen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Hanneke van Nistelrooij", "label": "Hanneke van Nistelrooij", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Meindert van der Stolk", "label": "Meindert van der Stolk", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rob Ligtenberg", "label": "Rob Ligtenberg", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Robert Geurts", "label": "Robert Geurts", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Thijs Oosterhuis", "label": "Thijs Oosterhuis", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Pascal van Dam", "label": "Pascal van Dam", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sam van der Schaaf", "label": "Sam van der Schaaf", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Maurice Berix", "label": "Maurice Berix", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jasper Dijkema", "label": "Jasper Dijkema", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marloes van Arkesteijn", "label": "Marloes van Arkesteijn", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Wijnand van Smaalen", "label": "Wijnand van Smaalen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bowine Wijffels", "label": "Bowine Wijffels", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Annelies van der Stoep", "label": "Annelies van der Stoep", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Robert Tekke", "label": "Robert Tekke", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Max van der Ham", "label": "Max van der Ham", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Annemarie Olieman", "label": "Annemarie Olieman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Michelle Damen", "label": "Michelle Damen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Anneke van de Kamp", "label": "Anneke van de Kamp", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Theodoros Chatzivasileiadis", "label": "Theodoros Chatzivasileiadis", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Zac Taylor", "label": "Zac Taylor", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Annelli Janssen", "label": "Annelli Janssen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Leon van Ast", "label": "Leon van Ast", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Roos Morales", "label": "Roos Morales", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Koen de Kruif", "label": "Koen de Kruif", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Martin Kuivenhoven", "label": "Martin Kuivenhoven", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rosa Groen", "label": "Rosa Groen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Steph van Es", "label": "Steph van Es", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Arwin van Buuren", "label": "Arwin van Buuren", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Astrid Manden-Benneker", "label": "Astrid Manden-Benneker", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Geert Brinkman", "label": "Geert Brinkman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Hans de Voogd", "label": "Hans de Voogd", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Immanuel Nijssen", "label": "Immanuel Nijssen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Julia Wittmayer", "label": "Julia Wittmayer", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marije Wassenaar- Verschuur", "label": "Marije Wassenaar- Verschuur", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Angelique de Wit", "label": "Angelique de Wit", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Else Boutkan", "label": "Else Boutkan", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Willem Kemmers", "label": "Willem Kemmers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Woody Maijers", "label": "Woody Maijers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Gerry Kouwenhoven", "label": "Gerry Kouwenhoven", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rogier van der Sande", "label": "Rogier van der Sande", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ferry Huurman", "label": "Ferry Huurman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Michiel van den Hout", "label": "Michiel van den Hout", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Cassandra van Altena", "label": "Cassandra van Altena", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Joke Stoop", "label": "Joke Stoop", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Albert van der Lans", "label": "Albert van der Lans", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ronald Lubbe", "label": "Ronald Lubbe", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Thirza Teulen", "label": "Thirza Teulen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Daan Groot", "label": "Daan Groot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Nynke Vries", "label": "Nynke Vries", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Robin Hill", "label": "Robin Hill", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Tom Lubbers", "label": "Tom Lubbers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Andre Nijhof", "label": "Andre Nijhof", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Nicolas Chevrollier", "label": "Nicolas Chevrollier", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Willem Schramade", "label": "Willem Schramade", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jolanda van Schaick", "label": "Jolanda van Schaick", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jonas Dooms", "label": "Jonas Dooms", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Karin Harmsen", "label": "Karin Harmsen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Els Boesveld", "label": "Els Boesveld", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marieke Noordermeer", "label": "Marieke Noordermeer", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Esther Baar", "label": "Esther Baar", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jasper Deuten", "label": "Jasper Deuten", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Laurens Hessels", "label": "Laurens Hessels", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Helen McGrath", "label": "Helen McGrath", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Luca Scrascia", "label": "Luca Scrascia", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sike Liefting", "label": "Sike Liefting", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "John de Vos", "label": "John de Vos", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Tijmen van den Heuvel", "label": "Tijmen van den Heuvel", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jan Paul van Soest", "label": "Jan Paul van Soest", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "BinBin Jiang Pearce", "label": "BinBin Jiang Pearce", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Geertje Brekebede", "label": "Geertje Brekebede", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Liselotte de Vries", "label": "Liselotte de Vries", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Johan Schot", "label": "Johan Schot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Timo Brinkman", "label": "Timo Brinkman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Emma Knoll", "label": "Emma Knoll", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marleen Buizer", "label": "Marleen Buizer", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Peter Ravensbergen", "label": "Peter Ravensbergen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Tim Overkamp - Ruijs", "label": "Tim Overkamp - Ruijs", "shape": "dot"}, {"color": "lightblue", "font": {"color": "black"}, "id": "GPDB_MP", "label": "GPDB_MP", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Johan Verschoor", "label": "Johan Verschoor", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Celine Pessers", "label": "Celine Pessers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jonathan Buettner", "label": "Jonathan Buettner", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Julie Kiveron", "label": "Julie Kiveron", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sonny Duijn", "label": "Sonny Duijn", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dick Van Den Oever", "label": "Dick Van Den Oever", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Django Conradi", "label": "Django Conradi", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Alexandra van Zaal", "label": "Alexandra van Zaal", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Nortbert Schotte", "label": "Nortbert Schotte", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Alex Goudriaan", "label": "Alex Goudriaan", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Hedwich Teunissen", "label": "Hedwich Teunissen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dolf Kern", "label": "Dolf Kern", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "V\u00e9ronique Bulthuis", "label": "V\u00e9ronique Bulthuis", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ed Smit", "label": "Ed Smit", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ernst-Jan Reinerie", "label": "Ernst-Jan Reinerie", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dirk Deichmann", "label": "Dirk Deichmann", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Nick den Hollander", "label": "Nick den Hollander", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rinke de Haan", "label": "Rinke de Haan", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Arjan van Velden", "label": "Arjan van Velden", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Natasja van der Lely", "label": "Natasja van der Lely", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jan Heins", "label": "Jan Heins", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Kees Jan Grin", "label": "Kees Jan Grin", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Angelique Erkenbosch", "label": "Angelique Erkenbosch", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ida Bastiaansen-Rompelman", "label": "Ida Bastiaansen-Rompelman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Colet van den Hoven - van Rijen", "label": "Colet van den Hoven - van Rijen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Emy de Kock", "label": "Emy de Kock", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dolores de Rooij", "label": "Dolores de Rooij", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Martha Huysinga", "label": "Martha Huysinga", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Michiel Strijland", "label": "Michiel Strijland", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Nina Waldhauer", "label": "Nina Waldhauer", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rik Pantjes", "label": "Rik Pantjes", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rianne van der Hulst", "label": "Rianne van der Hulst", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Aard Kluck", "label": "Aard Kluck", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Anne-Marie Bor", "label": "Anne-Marie Bor", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Martha Bettina Bailon", "label": "Martha Bettina Bailon", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Job van Schelven", "label": "Job van Schelven", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marleen Blanson Henkemans", "label": "Marleen Blanson Henkemans", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Monique Meulemans", "label": "Monique Meulemans", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bouke de Vries", "label": "Bouke de Vries", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Els van Oosten", "label": "Els van Oosten", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marius Hovius", "label": "Marius Hovius", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Miranda Ruigrok", "label": "Miranda Ruigrok", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Remon Blok", "label": "Remon Blok", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Antonia Krefeld-Schwalb", "label": "Antonia Krefeld-Schwalb", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dieuwertje Bosma", "label": "Dieuwertje Bosma", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dirk Schoenmaker", "label": "Dirk Schoenmaker", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jaap Boonstra", "label": "Jaap Boonstra", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Mathijs van Dijk", "label": "Mathijs van Dijk", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sebastian Gabel", "label": "Sebastian Gabel", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Peter Prins", "label": "Peter Prins", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Daphne d\u0027Hont", "label": "Daphne d\u0027Hont", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jan Arie Koorevaar", "label": "Jan Arie Koorevaar", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Daphne Nutma-van der Zee", "label": "Daphne Nutma-van der Zee", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Helma Dokkum", "label": "Helma Dokkum", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Nikki Brand", "label": "Nikki Brand", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Daan Verstand", "label": "Daan Verstand", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Wieke Pot", "label": "Wieke Pot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Stefan Wijers ", "label": "Stefan Wijers ", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jitske van Popering-Verkerk", "label": "Jitske van Popering-Verkerk", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Michiel Scholte", "label": "Michiel Scholte", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Pjotr Tjallema", "label": "Pjotr Tjallema", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bram Splinter", "label": "Bram Splinter", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Wouter van Dijk", "label": "Wouter van Dijk", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Maarten Hermus ", "label": "Maarten Hermus ", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ernst Hobma", "label": "Ernst Hobma", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Hans Stegeman", "label": "Hans Stegeman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Vidar Bakker", "label": "Vidar Bakker", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Paul Venderbosch", "label": "Paul Venderbosch", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bert Pinxterhuis ", "label": "Bert Pinxterhuis ", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jeroen Brom", "label": "Jeroen Brom", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Georgette Leltz", "label": "Georgette Leltz", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Henk Poldervaart", "label": "Henk Poldervaart", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Cor de Fijter", "label": "Cor de Fijter", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Mark Heemskerk", "label": "Mark Heemskerk", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "x", "label": "x", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Merel Hendriks", "label": "Merel Hendriks", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Inge van Ditshuizen", "label": "Inge van Ditshuizen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "L\u00e9on Jansen", "label": "L\u00e9on Jansen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Ronald Hiel", "label": "Ronald Hiel", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sanne Bruns", "label": "Sanne Bruns", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Stefan Kroese", "label": "Stefan Kroese", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Niek Jan van Kesteren", "label": "Niek Jan van Kesteren", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Leon Smet", "label": "Leon Smet", "shape": "dot"}, {"color": "lightblue", "font": {"color": "black"}, "id": "F_Huurman", "label": "F_Huurman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dennis vd Krogt", "label": "Dennis vd Krogt", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "J\u00f6rgen de Ree", "label": "J\u00f6rgen de Ree", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jaap-Jan Uittenbogaard ", "label": "Jaap-Jan Uittenbogaard ", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jeroen Duyster", "label": "Jeroen Duyster", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sandra Bechtold", "label": "Sandra Bechtold", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sylvia Pennings", "label": "Sylvia Pennings", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Leo van Leeuwen", "label": "Leo van Leeuwen", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bob Bisschops", "label": "Bob Bisschops", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Daan van Steijn", "label": "Daan van Steijn", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jacco Knape ", "label": "Jacco Knape ", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Onno Zwart", "label": "Onno Zwart", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Hubert Weijers", "label": "Hubert Weijers", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Klaas Hogervorst", "label": "Klaas Hogervorst", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Martin Goosens", "label": "Martin Goosens", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Theo Aanhane", "label": "Theo Aanhane", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dolph Uittenbroek", "label": "Dolph Uittenbroek", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dave Marcus", "label": "Dave Marcus", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Hester Maij", "label": "Hester Maij", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Simon Pennings", "label": "Simon Pennings", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Johan de Groot", "label": "Johan de Groot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Rik Pennings", "label": "Rik Pennings", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Mart Duineveld", "label": "Mart Duineveld", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bernd Jelmar Feenstra", "label": "Bernd Jelmar Feenstra", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jan van der Slot", "label": "Jan van der Slot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Bram Mulder", "label": "Bram Mulder", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Colja Corts", "label": "Colja Corts", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marit Hogervorst", "label": "Marit Hogervorst", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Harry Kager", "label": "Harry Kager", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Werner Haan", "label": "Werner Haan", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Walter Kort", "label": "Walter Kort", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Puck van Holsteijn", "label": "Puck van Holsteijn", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Antoine Heideveld", "label": "Antoine Heideveld", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Sijas Akkerman", "label": "Sijas Akkerman", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Femke Brenninkmeijer", "label": "Femke Brenninkmeijer", "shape": "dot"}, {"color": "lightblue", "font": {"color": "black"}, "id": "Rabobank-DB", "label": "Rabobank-DB", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Carlo Ruigrok", "label": "Carlo Ruigrok", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Anna-Marie van der Drift ", "label": "Anna-Marie van der Drift ", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Adriaan van Haaster", "label": "Adriaan van Haaster", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Erik Lommerse", "label": "Erik Lommerse", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Allan Visser", "label": "Allan Visser", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "John Boot", "label": "John Boot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Tatiana Filatova", "label": "Tatiana Filatova", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Angelique de Ret", "label": "Angelique de Ret", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Anouk Noordermeer", "label": "Anouk Noordermeer", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Dennis de Groot", "label": "Dennis de Groot", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Jan Dijstelbloem", "label": "Jan Dijstelbloem", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Marcel Gordijn", "label": "Marcel Gordijn", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Reny Wietsma", "label": "Reny Wietsma", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Robbert-Jan van Duijn", "label": "Robbert-Jan van Duijn", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Esther Rommel", "label": "Esther Rommel", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Arne Werverling", "label": "Arne Werverling", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "black"}, "id": "Michel Carol ", "label": "Michel Carol ", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "M_B", "to": "Mark Jan Terwindt", "value": 5.0}, {"from": "M_B", "to": "Peter van Bodegom", "value": 5.0}, {"from": "M_B", "to": "Gijs Dierks", "value": 5.0}, {"from": "M_B", "to": "Marieke de Wal", "value": 5.0}, {"from": "M_B", "to": "PJ Beers", "value": 5.0}, {"from": "M_B", "to": "Bianca Langhout-van den Bulk", "value": 5.0}, {"from": "M_B", "to": "Stefan de Jong", "value": 5.0}, {"from": "M_B", "to": "Tatiana Abi Aad", "value": 5.0}, {"from": "M_B", "to": "Tung Tung Chan", "value": 5.0}, {"from": "M_B", "to": "Wiesje Korf", "value": 5.0}, {"from": "M_B", "to": "Margo Strijbosch", "value": 5.0}, {"from": "M_B", "to": "Emile St\u00f6ver", "value": 5.0}, {"from": "M_B", "to": "Matthijs Jasperse", "value": 5.0}, {"from": "M_B", "to": "Ronald Grootscholten", "value": 5.0}, {"from": "M_B", "to": "Maarten Prins", "value": 5.0}, {"from": "M_B", "to": "Debby van Egmond", "value": 5.0}, {"from": "M_B", "to": "GerhardaTamminga", "value": 5.0}, {"from": "M_B", "to": "Jochem Timmers", "value": 5.0}, {"from": "M_B", "to": "Peter Verheij", "value": 5.0}, {"from": "M_B", "to": "Wolf Mooij", "value": 5.0}, {"from": "M_B", "to": "Koos Biesmeijer", "value": 5.0}, {"from": "M_B", "to": "William Voorberg", "value": 5.0}, {"from": "M_B", "to": "Detmer Koekoek", "value": 5.0}, {"from": "M_B", "to": "Bert Mens", "value": 5.0}, {"from": "M_B", "to": "Donald Broekhuizen", "value": 5.0}, {"from": "M_B", "to": "Hanneke van Nistelrooij", "value": 5.0}, {"from": "M_B", "to": "Meindert van der Stolk", "value": 5.0}, {"from": "M_B", "to": "Rob Ligtenberg", "value": 5.0}, {"from": "M_B", "to": "Robert Geurts", "value": 5.0}, {"from": "M_B", "to": "Thijs Oosterhuis", "value": 5.0}, {"from": "M_B", "to": "Pascal van Dam", "value": 5.0}, {"from": "M_B", "to": "Sam van der Schaaf", "value": 5.0}, {"from": "M_B", "to": "Maurice Berix", "value": 5.0}, {"from": "M_B", "to": "Jasper Dijkema", "value": 5.0}, {"from": "M_B", "to": "Marloes van Arkesteijn", "value": 5.0}, {"from": "M_B", "to": "Wijnand van Smaalen", "value": 5.0}, {"from": "M_B", "to": "Bowine Wijffels", "value": 5.0}, {"from": "M_B", "to": "Annelies van der Stoep", "value": 5.0}, {"from": "M_B", "to": "Robert Tekke", "value": 5.0}, {"from": "M_B", "to": "Max van der Ham", "value": 5.0}, {"from": "M_B", "to": "Annemarie Olieman", "value": 5.0}, {"from": "M_B", "to": "Michelle Damen", "value": 5.0}, {"from": "M_B", "to": "Anneke van de Kamp", "value": 5.0}, {"from": "M_B", "to": "Theodoros Chatzivasileiadis", "value": 5.0}, {"from": "M_B", "to": "Zac Taylor", "value": 5.0}, {"from": "M_B", "to": "Annelli Janssen", "value": 5.0}, {"from": "M_B", "to": "Leon van Ast", "value": 4.0}, {"from": "M_B", "to": "Roos Morales", "value": 4.0}, {"from": "M_B", "to": "Koen de Kruif", "value": 4.0}, {"from": "M_B", "to": "Martin Kuivenhoven", "value": 4.0}, {"from": "M_B", "to": "Rosa Groen", "value": 4.0}, {"from": "M_B", "to": "Steph van Es", "value": 4.0}, {"from": "M_B", "to": "Arwin van Buuren", "value": 4.0}, {"from": "M_B", "to": "Astrid Manden-Benneker", "value": 4.0}, {"from": "M_B", "to": "Geert Brinkman", "value": 4.0}, {"from": "M_B", "to": "Hans de Voogd", "value": 4.0}, {"from": "M_B", "to": "Immanuel Nijssen", "value": 4.0}, {"from": "M_B", "to": "Julia Wittmayer", "value": 4.0}, {"from": "M_B", "to": "Marije Wassenaar- Verschuur", "value": 4.0}, {"from": "M_B", "to": "Angelique de Wit", "value": 4.0}, {"from": "M_B", "to": "Else Boutkan", "value": 4.0}, {"from": "M_B", "to": "Willem Kemmers", "value": 4.0}, {"from": "M_B", "to": "Woody Maijers", "value": 4.0}, {"from": "M_B", "to": "Gerry Kouwenhoven", "value": 4.0}, {"from": "M_B", "to": "Rogier van der Sande", "value": 4.0}, {"from": "M_B", "to": "Ferry Huurman", "value": 4.0}, {"from": "M_B", "to": "Michiel van den Hout", "value": 4.0}, {"from": "M_B", "to": "Cassandra van Altena", "value": 4.0}, {"from": "M_B", "to": "Joke Stoop", "value": 4.0}, {"from": "M_B", "to": "Albert van der Lans", "value": 4.0}, {"from": "M_B", "to": "Ronald Lubbe", "value": 4.0}, {"from": "M_B", "to": "Thirza Teulen", "value": 4.0}, {"from": "M_B", "to": "Daan Groot", "value": 4.0}, {"from": "M_B", "to": "Nynke Vries", "value": 4.0}, {"from": "M_B", "to": "Robin Hill", "value": 4.0}, {"from": "M_B", "to": "Tom Lubbers", "value": 4.0}, {"from": "M_B", "to": "Andre Nijhof", "value": 4.0}, {"from": "M_B", "to": "Nicolas Chevrollier", "value": 4.0}, {"from": "M_B", "to": "Willem Schramade", "value": 4.0}, {"from": "M_B", "to": "Jolanda van Schaick", "value": 4.0}, {"from": "M_B", "to": "Jonas Dooms", "value": 4.0}, {"from": "M_B", "to": "Karin Harmsen", "value": 4.0}, {"from": "M_B", "to": "Els Boesveld", "value": 4.0}, {"from": "M_B", "to": "Marieke Noordermeer", "value": 4.0}, {"from": "M_B", "to": "Esther Baar", "value": 4.0}, {"from": "M_B", "to": "Jasper Deuten", "value": 4.0}, {"from": "M_B", "to": "Laurens Hessels", "value": 4.0}, {"from": "M_B", "to": "Helen McGrath", "value": 4.0}, {"from": "M_B", "to": "Luca Scrascia", "value": 4.0}, {"from": "M_B", "to": "Sike Liefting", "value": 4.0}, {"from": "M_B", "to": "John de Vos", "value": 4.0}, {"from": "M_B", "to": "Tijmen van den Heuvel", "value": 4.0}, {"from": "M_B", "to": "Jan Paul van Soest", "value": 4.0}, {"from": "M_B", "to": "BinBin Jiang Pearce", "value": 4.0}, {"from": "M_B", "to": "Geertje Brekebede", "value": 4.0}, {"from": "M_B", "to": "Liselotte de Vries", "value": 4.0}, {"from": "M_B", "to": "Johan Schot", "value": 4.0}, {"from": "M_B", "to": "Timo Brinkman", "value": 4.0}, {"from": "M_B", "to": "Emma Knoll", "value": 4.0}, {"from": "M_B", "to": "Marleen Buizer", "value": 4.0}, {"from": "M_B", "to": "Peter Ravensbergen", "value": 4.0}, {"from": "M_B", "to": "Tim Overkamp - Ruijs", "value": 4.0}, {"from": "GPDB_MP", "to": "Johan Verschoor", "value": 3.0}, {"from": "M_B", "to": "Celine Pessers", "value": 3.0}, {"from": "M_B", "to": "Jonathan Buettner", "value": 3.0}, {"from": "M_B", "to": "Julie Kiveron", "value": 3.0}, {"from": "M_B", "to": "Sonny Duijn", "value": 3.0}, {"from": "M_B", "to": "Dick Van Den Oever", "value": 3.0}, {"from": "M_B", "to": "Django Conradi", "value": 3.0}, {"from": "M_B", "to": "Alexandra van Zaal", "value": 3.0}, {"from": "M_B", "to": "Nortbert Schotte", "value": 3.0}, {"from": "M_B", "to": "Alex Goudriaan", "value": 3.0}, {"from": "M_B", "to": "Hedwich Teunissen", "value": 3.0}, {"from": "M_B", "to": "Dolf Kern", "value": 3.0}, {"from": "M_B", "to": "V\u00e9ronique Bulthuis", "value": 3.0}, {"from": "M_B", "to": "Ed Smit", "value": 3.0}, {"from": "M_B", "to": "Ernst-Jan Reinerie", "value": 3.0}, {"from": "M_B", "to": "Dirk Deichmann", "value": 3.0}, {"from": "M_B", "to": "Nick den Hollander", "value": 3.0}, {"from": "M_B", "to": "Rinke de Haan", "value": 3.0}, {"from": "M_B", "to": "Arjan van Velden", "value": 3.0}, {"from": "M_B", "to": "Natasja van der Lely", "value": 3.0}, {"from": "M_B", "to": "Jan Heins", "value": 3.0}, {"from": "M_B", "to": "Kees Jan Grin", "value": 3.0}, {"from": "M_B", "to": "Angelique Erkenbosch", "value": 3.0}, {"from": "M_B", "to": "Ida Bastiaansen-Rompelman", "value": 3.0}, {"from": "M_B", "to": "Colet van den Hoven - van Rijen", "value": 3.0}, {"from": "M_B", "to": "Emy de Kock", "value": 3.0}, {"from": "M_B", "to": "Dolores de Rooij", "value": 3.0}, {"from": "M_B", "to": "Martha Huysinga", "value": 3.0}, {"from": "M_B", "to": "Michiel Strijland", "value": 3.0}, {"from": "M_B", "to": "Nina Waldhauer", "value": 3.0}, {"from": "M_B", "to": "Rik Pantjes", "value": 3.0}, {"from": "M_B", "to": "Rianne van der Hulst", "value": 3.0}, {"from": "M_B", "to": "Aard Kluck", "value": 3.0}, {"from": "M_B", "to": "Anne-Marie Bor", "value": 3.0}, {"from": "M_B", "to": "Martha Bettina Bailon", "value": 3.0}, {"from": "M_B", "to": "Job van Schelven", "value": 3.0}, {"from": "M_B", "to": "Marleen Blanson Henkemans", "value": 3.0}, {"from": "M_B", "to": "Monique Meulemans", "value": 3.0}, {"from": "M_B", "to": "Bouke de Vries", "value": 3.0}, {"from": "M_B", "to": "Els van Oosten", "value": 3.0}, {"from": "M_B", "to": "Marius Hovius", "value": 3.0}, {"from": "M_B", "to": "Miranda Ruigrok", "value": 3.0}, {"from": "M_B", "to": "Remon Blok", "value": 3.0}, {"from": "M_B", "to": "Antonia Krefeld-Schwalb", "value": 3.0}, {"from": "M_B", "to": "Dieuwertje Bosma", "value": 3.0}, {"from": "M_B", "to": "Dirk Schoenmaker", "value": 3.0}, {"from": "M_B", "to": "Jaap Boonstra", "value": 3.0}, {"from": "M_B", "to": "Mathijs van Dijk", "value": 3.0}, {"from": "M_B", "to": "Sebastian Gabel", "value": 3.0}, {"from": "M_B", "to": "Peter Prins", "value": 3.0}, {"from": "M_B", "to": "Daphne d\u0027Hont", "value": 3.0}, {"from": "M_B", "to": "Jan Arie Koorevaar", "value": 3.0}, {"from": "M_B", "to": "Daphne Nutma-van der Zee", "value": 3.0}, {"from": "M_B", "to": "Helma Dokkum", "value": 3.0}, {"from": "M_B", "to": "Nikki Brand", "value": 3.0}, {"from": "M_B", "to": "Daan Verstand", "value": 3.0}, {"from": "M_B", "to": "Wieke Pot", "value": 3.0}, {"from": "M_B", "to": "Stefan Wijers ", "value": 3.0}, {"from": "M_B", "to": "Jitske van Popering-Verkerk", "value": 3.0}, {"from": "M_B", "to": "Michiel Scholte", "value": 3.0}, {"from": "M_B", "to": "Pjotr Tjallema", "value": 3.0}, {"from": "M_B", "to": "Bram Splinter", "value": 3.0}, {"from": "M_B", "to": "Wouter van Dijk", "value": 3.0}, {"from": "M_B", "to": "Maarten Hermus ", "value": 3.0}, {"from": "M_B", "to": "Ernst Hobma", "value": 3.0}, {"from": "M_B", "to": "Hans Stegeman", "value": 3.0}, {"from": "M_B", "to": "Vidar Bakker", "value": 3.0}, {"from": "M_B", "to": "Paul Venderbosch", "value": 1.0}, {"from": "M_B", "to": "Bert Pinxterhuis ", "value": 1.0}, {"from": "M_B", "to": "Jeroen Brom", "value": 1.0}, {"from": "M_B", "to": "Georgette Leltz", "value": 1.0}, {"from": "M_B", "to": "Henk Poldervaart", "value": 1.0}, {"from": "M_B", "to": "Cor de Fijter", "value": 1.0}, {"from": "M_B", "to": "Mark Heemskerk", "value": 1.0}, {"from": "M_B", "to": "x", "value": 1.0}, {"from": "M_B", "to": "Merel Hendriks", "value": 1.0}, {"from": "M_B", "to": "Inge van Ditshuizen", "value": 1.0}, {"from": "M_B", "to": "L\u00e9on Jansen", "value": 1.0}, {"from": "M_B", "to": "Ronald Hiel", "value": 1.0}, {"from": "M_B", "to": "Sanne Bruns", "value": 1.0}, {"from": "M_B", "to": "Stefan Kroese", "value": 1.0}, {"from": "M_B", "to": "Niek Jan van Kesteren", "value": 2.0}, {"from": "M_B", "to": "Leon Smet", "value": 2.0}, {"from": "F_Huurman", "to": "Dennis vd Krogt", "value": 2.0}, {"from": "F_Huurman", "to": "J\u00f6rgen de Ree", "value": 2.0}, {"from": "M_B", "to": "Jaap-Jan Uittenbogaard ", "value": 2.0}, {"from": "M_B", "to": "Jeroen Duyster", "value": 2.0}, {"from": "M_B", "to": "Sandra Bechtold", "value": 2.0}, {"from": "M_B", "to": "Sylvia Pennings", "value": 2.0}, {"from": "GPDB_MP", "to": "Leo van Leeuwen", "value": 2.0}, {"from": "GPDB_MP", "to": "Bob Bisschops", "value": 2.0}, {"from": "GPDB_MP", "to": "Daan van Steijn", "value": 2.0}, {"from": "GPDB_MP", "to": "Jacco Knape ", "value": 2.0}, {"from": "GPDB_MP", "to": "Onno Zwart", "value": 2.0}, {"from": "GPDB_MP", "to": "Hubert Weijers", "value": 2.0}, {"from": "GPDB_MP", "to": "Klaas Hogervorst", "value": 2.0}, {"from": "GPDB_MP", "to": "Martin Goosens", "value": 2.0}, {"from": "GPDB_MP", "to": "Theo Aanhane", "value": 2.0}, {"from": "GPDB_MP", "to": "Dolph Uittenbroek", "value": 2.0}, {"from": "GPDB_MP", "to": "Dave Marcus", "value": 2.0}, {"from": "GPDB_MP", "to": "Hester Maij", "value": 2.0}, {"from": "GPDB_MP", "to": "Simon Pennings", "value": 2.0}, {"from": "GPDB_MP", "to": "Johan de Groot", "value": 2.0}, {"from": "GPDB_MP", "to": "Rik Pennings", "value": 2.0}, {"from": "GPDB_MP", "to": "Mart Duineveld", "value": 2.0}, {"from": "GPDB_MP", "to": "Bernd Jelmar Feenstra", "value": 2.0}, {"from": "GPDB_MP", "to": "Jan van der Slot", "value": 2.0}, {"from": "M_B", "to": "Bram Mulder", "value": 2.0}, {"from": "M_B", "to": "Colja Corts", "value": 2.0}, {"from": "M_B", "to": "Marit Hogervorst", "value": 2.0}, {"from": "M_B", "to": "Harry Kager", "value": 2.0}, {"from": "M_B", "to": "Werner Haan", "value": 2.0}, {"from": "M_B", "to": "Walter Kort", "value": 2.0}, {"from": "M_B", "to": "Puck van Holsteijn", "value": 3.0}, {"from": "M_B", "to": "Antoine Heideveld", "value": 2.0}, {"from": "M_B", "to": "Sijas Akkerman", "value": 2.0}, {"from": "M_B", "to": "Femke Brenninkmeijer", "value": 2.0}, {"from": "Rabobank-DB", "to": "Carlo Ruigrok", "value": 3.0}, {"from": "Rabobank-DB", "to": "Anna-Marie van der Drift ", "value": 2.0}, {"from": "Rabobank-DB", "to": "Adriaan van Haaster", "value": 2.0}, {"from": "GPDB_MP", "to": "Erik Lommerse", "value": 3.0}, {"from": "GPDB_MP", "to": "Allan Visser", "value": 3.0}, {"from": "Rabobank-DB", "to": "John Boot", "value": 3.0}, {"from": "M_B", "to": "Tatiana Filatova", "value": 2.0}, {"from": "M_B", "to": "Angelique de Ret", "value": 2.0}, {"from": "M_B", "to": "Anouk Noordermeer", "value": 2.0}, {"from": "M_B", "to": "Dennis de Groot", "value": 2.0}, {"from": "M_B", "to": "Jan Dijstelbloem", "value": 2.0}, {"from": "M_B", "to": "Marcel Gordijn", "value": 2.0}, {"from": "M_B", "to": "Reny Wietsma", "value": 2.0}, {"from": "M_B", "to": "Robbert-Jan van Duijn", "value": 2.0}, {"from": "M_B", "to": "Esther Rommel", "value": 2.0}, {"from": "M_B", "to": "Arne Werverling", "value": 2.0}, {"from": "M_B", "to": "Michel Carol ", "value": 3.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
